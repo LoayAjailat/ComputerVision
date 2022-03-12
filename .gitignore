@@ -4,3 +4,7 @@ __pycache__/
 venv/
 # Ignore backup temporary files
 __*.py
+# Ignore online example files
+Online Files/
+# Ignore environment variables
+.env
