@@ -161,6 +161,12 @@ def runVirtualKeyboard(mc):
             success, img = cap.read()
             FLAG_Y = 1
             img = cv2.flip(img, FLAG_Y)  # Flip image horizontally so that the mirrored image moves to the 'same side'
+            h2 = 720 - 200
+            gap = 200
+            x2 = 1280 - gap//2 - 100
+            y2 = gap//2
+            w2 = 25
+            cv2.rectangle(img, (x2, y2), (x2 + w2, y2 + h2), (255, 0, 255), cv2.FILLED)
 
             results = hands.process(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
             # Incase the system sees multiple hands this if statment deals with that and produces another hand overlay
@@ -206,6 +212,18 @@ def runVirtualKeyboard(mc):
                                 if abs(middle[0] - index[0]) > 40:
                                     pressed = False
                                     break
+                        if not pressed:
+                            if x2 <= index[0] <= (x2 + w2) and y2 <= index[1] <= (y2 + h2):
+                                xI, yI = index[0], index[1]
+                                percentage = int((yI / (y2+h2)) * 100)
+                                if abs(middle[0] - index[0]) <= 30 and abs(middle[1] - index[1]) <= 30:
+                                    pressed = True
+                                    loop.run_until_complete(mc.changeLuminance(percentage))
+                                    print(percentage)
+                        else:
+                            if abs(middle[0] - index[0]) > 40:
+                                pressed = False
+                                break
             # Draw the keyboard
             img = o_Keyboard.draw(img)
 
